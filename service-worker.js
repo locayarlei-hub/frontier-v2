@@ -1,11 +1,11 @@
-const CACHE = "frontier-static-v1.3-season-finale";
+const CACHE = "frontier-static-v1.3.1-laptop-fix";
 const SHELL = [
   "./",
   "./index.html",
-  "./css/styles.css?v=1.3-season-finale",
+  "./css/styles.css?v=1.3.1-laptop-fix",
   "./js/backend.js",
   "./js/charts.js",
-  "./js/app.js?v=1.3-season-finale",
+  "./js/app.js?v=1.3.1-laptop-fix",
   "./manifest.webmanifest",
   "./icons/icon-192.png",
   "./icons/icon-512.png"
