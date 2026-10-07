@@ -1,0 +1,7 @@
+# Nunca envie segredos para o GitHub
+.env
+.env.*
+!*.env.example
+supabase/functions/.env
+supabase/.env.local
+.DS_Store

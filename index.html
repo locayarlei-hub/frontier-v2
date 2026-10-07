@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Frontier — Construa seu caminho</title>
+  <meta name="theme-color" content="#2b1b14">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Frontier — seu sistema pessoal para projetos, estudos, finanças, veículos, livros, notas, agenda e animais.">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="css/styles.css?v=1.3-season-finale">
+</head>
+<body>
+<section id="authScreen" class="auth-screen">
+  <div class="auth-shell">
+    <div class="auth-hero">
+      <div>
+        <span class="brand-kicker">FRONTIER</span>
+        <h1>Construa seu caminho.</h1>
+        <p>Projetos, finanças, estudos, veículos, livros, notas e animais em uma base pessoal inspirada no Texas, na estrada e no espírito de conquista.</p>
+      </div>
+      <div class="auth-feature-grid">
+        <span>🤠 Projetos adaptáveis</span><span>💰 Finanças integradas</span><span>🗺️ Viagens</span>
+        <span>🐾 Animais</span><span>📚 Livros</span><span>🔎 Pesquisa global</span>
+      </div>
+    </div>
+    <div class="auth-panel">
+      <div class="auth-tabs">
+        <button class="active" data-auth-tab="login">Entrar</button>
+        <button data-auth-tab="register">Criar conta</button>
+      </div>
+      <form id="loginForm" class="auth-form active">
+        <h2>Bem-vindo de volta</h2>
+        <p>Acesse seu espaço pessoal.</p>
+        <label>E-mail<input id="loginEmail" type="email" required autocomplete="email"></label>
+        <label>Senha<input id="loginPassword" type="password" required minlength="4" autocomplete="current-password"></label>
+        <button class="btn primary wide" type="submit">Entrar</button>
+        <button class="text-btn" type="button" id="forgotPasswordBtn">Esqueci minha senha</button>
+        <div id="loginMessage" class="form-message"></div>
+      </form>
+      <form id="registerForm" class="auth-form">
+        <h2>Criar sua conta</h2>
+        <p>Uma conta nova começa completamente vazia.</p>
+        <label>Nome<input id="registerName" required maxlength="60" autocomplete="name"></label>
+        <label>E-mail<input id="registerEmail" type="email" required autocomplete="email"></label>
+        <label>Senha<input id="registerPassword" type="password" required minlength="6" autocomplete="new-password"></label>
+        <label>Confirmar senha<input id="registerPassword2" type="password" required minlength="6" autocomplete="new-password"></label>
+        <button class="btn primary wide" type="submit">Criar minha conta</button>
+        <div id="registerMessage" class="form-message"></div>
+      </form>
+      <div class="auth-footnote" id="backendModeLabel"></div>
+    </div>
+  </div>
+</section>
+
+<div id="appShell" class="app hidden">
+  <aside class="sidebar">
+    <a class="brand" href="#" data-page-link="dashboard">
+      <span class="brand-badge">★</span>
+      <span><b>FRONTIER</b><small>Build your own path</small></span>
+    </a>
+    <nav class="nav">
+      <button class="active" data-page="dashboard">🏠 Visão Geral</button>
+      <button data-page="projects">🧭 Projetos</button>
+      <button data-page="studies">🎓 Estudos</button>
+      <button data-page="vehicles">🚘 Veículos</button>
+      <button data-page="books">📚 Livros</button>
+      <button data-page="finance">💵 Finanças</button>
+      <button data-page="calendar">📅 Agenda</button>
+      <button data-page="notes">📝 Notas</button>
+      <button data-page="pets">🐾 Animais</button>
+      <button data-page="alerts">🔔 Notificações <span id="alertCountBadge" class="nav-count hidden">0</span></button>
+      <button data-page="settings">⚙️ Configurações</button>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="user-mini"><div class="avatar" id="userAvatar">F</div><div><b id="sideUserName">Usuário</b><small id="sideUserEmail"></small></div></div>
+      <button id="logoutBtn" class="btn ghost wide">Sair</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="global-header">
+      <div class="global-search-wrap"><span>⌕</span><input id="globalSearch" placeholder="Buscar em todo o Frontier: projetos, livros, notas, gastos, animais..."></div>
+      <div class="header-actions"><button id="quickAddBtn" class="btn primary">+ Adicionar</button></div>
+      <div id="globalSearchResults" class="global-search-results hidden"></div>
+    </header>
+
+    <section id="dashboard" class="page active">
+      <div class="page-head">
+        <div><span class="section-kicker">BASE CAMP</span><h1>Visão Geral</h1><p>Projetos, dinheiro, estudos, livros, agenda, notas e animais — tudo no mesmo mapa.</p></div>
+        <span id="currentDateLabel" class="date-chip"></span>
+      </div>
+      <div id="dashboardEmpty" class="empty-hero hidden">
+        <div class="empty-icon">★</div><h2>Seu caminho começa aqui.</h2>
+        <p>Crie um projeto, registre uma movimentação, faça uma nota ou cadastre um animal. O Frontier cresce conforme você usa.</p>
+        <div><button class="btn primary" onclick="Frontier.openProjectWizard()">Criar projeto</button> <button class="btn secondary" onclick="Frontier.openFinanceModal()">Registrar movimentação</button></div>
+      </div>
+      <div id="dashboardContent">
+        <div class="stats-grid">
+          <div class="stat-card"><span>Projetos ativos</span><b id="dashProjectCount">0</b><small id="dashProjectSub">0 em andamento</small></div>
+          <div class="stat-card"><span>Progresso médio</span><b id="dashProgress">0%</b><small>dos seus projetos</small></div>
+          <div class="stat-card"><span>Saldo geral</span><b id="dashBalance">R$ 0</b><small id="dashBalanceSub">entradas − saídas</small></div>
+          <div class="stat-card"><span>Animais</span><b id="dashPetCount">0</b><small id="dashPetSub">0 cuidados próximos</small></div>
+        </div>
+        <div class="dashboard-grid">
+          <article class="card span-2 today-card"><div class="card-head"><div><span class="section-kicker">TODAY</span><h3>Hoje</h3><p>O que merece sua atenção agora.</p></div><span id="todaySummaryBadge" class="badge">Tudo em ordem</span></div><div id="dashboardToday" class="today-grid"></div></article>
+          <article class="card"><div class="card-head"><div><h3>Hábitos</h3><p>Consistência sem virar obrigação.</p></div><button class="link-btn" onclick="Frontier.openPagePublic('habits')">Gerenciar</button></div><div id="dashboardHabits" class="habit-today-list"></div></article>
+          <article class="card"><div class="card-head"><div><h3>Revisão mensal</h3><p id="dashboardReviewMonth">Resumo do mês atual.</p></div><button class="link-btn" onclick="Frontier.openMonthlyReview()">Ver completa</button></div><div id="dashboardReview" class="review-mini"></div></article>
+          <article class="card chart-card span-2"><div class="card-head"><div><h3>Evolução dos projetos</h3><p>Progresso atual por objetivo.</p></div></div><canvas id="dashProjectChart"></canvas><div class="chart-empty hidden" id="dashProjectChartEmpty">Crie projetos para preencher o gráfico.</div></article>
+          <article class="card"><div class="card-head"><div><h3>Gastos por categoria</h3><p>Mês atual.</p></div></div><canvas id="dashExpenseChart"></canvas><div class="chart-empty hidden" id="dashExpenseChartEmpty">Sem gastos no mês.</div></article>
+          <article class="card"><div class="card-head"><div><h3>Fluxo financeiro</h3><p>Últimos 6 meses.</p></div></div><canvas id="dashCashChart"></canvas><div class="chart-empty hidden" id="dashCashChartEmpty">Sem movimentações.</div></article>
+          <article class="card"><div class="card-head"><div><h3>Próximos passos</h3><p>Tarefas, prazos e cuidados.</p></div></div><div id="dashboardNextActions" class="stack-list"></div></article>
+          <article class="card"><div class="card-head"><div><h3>Animais</h3><p>Resumo de saúde e gastos.</p></div><button class="link-btn" data-page-link="pets">Ver todos</button></div><div id="dashboardPets" class="stack-list"></div></article>
+          <article class="card"><div class="card-head"><div><h3>Estudos</h3><p>Horas e sessões recentes.</p></div><button class="link-btn" data-page-link="studies">Abrir</button></div><div id="dashboardStudies" class="stack-list"></div></article>
+          <article class="card"><div class="card-head"><div><h3>Veículos</h3><p>Quilometragem, manutenção e gastos.</p></div><button class="link-btn" data-page-link="vehicles">Abrir</button></div><div id="dashboardVehicles" class="stack-list"></div></article>
+          <article class="card"><div class="card-head"><div><h3>Leitura</h3><p>Livro atual e progresso.</p></div><button class="link-btn" data-page-link="books">Abrir biblioteca</button></div><div id="dashboardBooks" class="stack-list"></div></article>
+          <article class="card"><div class="card-head"><div><h3>Notas recentes</h3><p>O que você anotou por último.</p></div><button class="link-btn" data-page-link="notes">Abrir notas</button></div><div id="dashboardNotes" class="stack-list"></div></article>
+          <article class="card span-2"><div class="card-head"><div><h3>Agenda</h3><p>Datas importantes dos próximos 30 dias.</p></div><button class="link-btn" data-page-link="calendar">Abrir agenda</button></div><div id="dashboardCalendar" class="calendar-strip"></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="habits" class="page">
+      <div class="page-head"><div><span class="section-kicker">RHYTHM</span><h1>Hábitos</h1><p>Pequenas ações recorrentes, acompanhadas sem misturar com projetos.</p></div><button class="btn primary" onclick="Frontier.openHabitModal()">+ Novo hábito</button></div>
+      <div class="stats-grid"><div class="stat-card"><span>Hábitos ativos</span><b id="habitStatActive">0</b><small>na sua rotina</small></div><div class="stat-card"><span>Feitos hoje</span><b id="habitStatToday">0</b><small>concluídos</small></div><div class="stat-card"><span>Taxa do mês</span><b id="habitStatRate">0%</b><small>dias previstos</small></div><div class="stat-card"><span>Melhor sequência</span><b id="habitStatStreak">0</b><small>dias</small></div></div>
+      <div id="habitsGrid" class="habit-grid"></div>
+    </section>
+
+    <section id="projects" class="page">
+      <div class="page-head"><div><span class="section-kicker">TRAILS</span><h1>Projetos</h1><p>Metas, viagens, compras, estudos e objetivos vivem aqui.</p></div><button class="btn primary" onclick="Frontier.openProjectWizard()">+ Novo projeto</button></div>
+      <div class="tabs" id="projectCategoryTabs"><button class="active" data-filter="">Todos</button><button data-filter="Compra">Compras</button><button data-filter="Viagem">Viagens</button><button data-filter="Aprendizado">Aprendizado</button><button data-filter="Carreira">Carreira</button><button data-filter="Pessoal">Pessoais</button></div>
+      <div class="toolbar"><input id="projectSearch" placeholder="Buscar projeto..."><select id="projectStatusFilter"><option value="">Todos os status</option><option>Planejando</option><option>Em andamento</option><option>Pausado</option><option>Concluído</option></select><select id="projectHealthFilter"><option value="">Qualquer ritmo</option><option value="good">No ritmo</option><option value="warn">Atenção</option><option value="bad">Atrasado</option></select></div>
+      <div id="projectsGrid" class="project-grid"></div>
+    </section>
+
+    <section id="studies" class="page">
+      <div class="page-head"><div><span class="section-kicker">STUDY CAMP</span><h1>Estudos</h1><p>Registre sessões de estudo ligadas aos seus projetos de aprendizado e concursos.</p></div><button class="btn primary" onclick="Frontier.openStudyModal()">+ Registrar estudo</button></div>
+      <div class="stats-grid"><div class="stat-card"><span>Horas totais</span><b id="studyHoursTotal">0h</b><small>registradas</small></div><div class="stat-card"><span>Últimos 7 dias</span><b id="studyHoursWeek">0h</b><small>de estudo</small></div><div class="stat-card"><span>Sessões</span><b id="studySessionCount">0</b><small>registradas</small></div><div class="stat-card"><span>Média em simulados</span><b id="studyScoreAvg">—</b><small>quando informada</small></div></div>
+      <div class="two-grid"><article class="card"><div class="card-head"><div><h3>Horas por matéria</h3><p>Distribuição das sessões registradas.</p></div></div><canvas id="studySubjectChart"></canvas><div id="studySubjectEmpty" class="chart-empty hidden">Registre sessões para preencher o gráfico.</div></article><article class="card"><div class="card-head"><div><h3>Projetos de estudo</h3><p>Aprendizado e carreira.</p></div></div><div id="studyProjects" class="stack-list"></div></article></div>
+      <div class="card"><div class="card-head"><div><h3>Sessões recentes</h3><p>Seu histórico de estudo.</p></div></div><div class="table-wrap"><table><thead><tr><th>Data</th><th>Projeto</th><th>Matéria</th><th>Tempo</th><th>Resultado</th><th></th></tr></thead><tbody id="studyRows"></tbody></table></div></div>
+    </section>
+
+    <section id="vehicles" class="page">
+      <div class="page-head"><div><span class="section-kicker">GARAGE</span><h1>Veículos</h1><p>Carros e motos com quilometragem, combustível, manutenção e gastos integrados ao financeiro.</p></div><button class="btn primary" onclick="Frontier.openVehicleModal()">+ Cadastrar veículo</button></div>
+      <div class="stats-grid"><div class="stat-card"><span>Veículos</span><b id="vehicleStatCount">0</b><small>cadastrados</small></div><div class="stat-card"><span>Gastos no mês</span><b id="vehicleStatExpense">R$ 0</b><small>financeiro integrado</small></div><div class="stat-card"><span>Abastecimentos</span><b id="vehicleStatFuel">0</b><small>registros</small></div><div class="stat-card"><span>Manutenções próximas</span><b id="vehicleStatMaintenance">0</b><small>em até 30 dias</small></div></div>
+      <div id="vehiclesGrid" class="vehicle-grid"></div>
+    </section>
+
+
+    <section id="books" class="page">
+      <div class="page-head"><div><span class="section-kicker">LIBRARY</span><h1>Livros</h1><p>Sua biblioteca pessoal, progresso de leitura, sessões, citações e aprendizados.</p></div><button class="btn primary" onclick="Frontier.openBookModal()">+ Adicionar livro</button></div>
+      <div class="stats-grid"><div class="stat-card"><span>Na biblioteca</span><b id="bookStatTotal">0</b><small>livros cadastrados</small></div><div class="stat-card"><span>Lendo agora</span><b id="bookStatReading">0</b><small>em andamento</small></div><div class="stat-card"><span>Concluídos no ano</span><b id="bookStatYear">0</b><small>leituras finalizadas</small></div><div class="stat-card"><span>Páginas no mês</span><b id="bookStatPages">0</b><small>registradas em sessões</small></div></div>
+      <div class="toolbar"><input id="bookSearch" placeholder="Buscar por título, autor ou categoria..."><select id="bookStatusFilter"><option value="">Todos os status</option><option>Quero ler</option><option>Lendo</option><option>Pausado</option><option>Concluído</option><option>Abandonado</option></select></div>
+      <div id="booksGrid" class="bookshelf-grid"></div>
+    </section>
+
+    <section id="finance" class="page">
+      <div class="page-head"><div><span class="section-kicker">LEDGER</span><h1>Finanças</h1><p>Livro-caixa pessoal com origem, categorias, contas, parcelas e recorrências.</p></div><div><button class="btn secondary" onclick="Frontier.openAccountModal()">+ Conta</button> <button class="btn primary" onclick="Frontier.openFinanceModal()">+ Movimentação</button></div></div>
+      <div class="account-strip" id="accountsStrip"></div>
+      <div class="stats-grid"><div class="stat-card income"><span>Entradas</span><b id="finIncome">R$ 0</b><small>no filtro atual</small></div><div class="stat-card expense"><span>Saídas</span><b id="finExpense">R$ 0</b><small>no filtro atual</small></div><div class="stat-card"><span>Saldo</span><b id="finBalance">R$ 0</b><small>entradas − saídas</small></div><div class="stat-card reserve"><span>Reservas</span><b id="finReserve">R$ 0</b><small>separado para metas</small></div></div>
+      <div class="toolbar finance-toolbar"><input id="finSearch" placeholder="Buscar movimentação..."><select id="finType"><option value="">Todos os tipos</option><option value="income">Entradas</option><option value="expense">Saídas</option><option value="reserve">Reservas</option></select><select id="finCategory"><option value="">Todas as categorias</option></select><select id="finAccount"><option value="">Todas as contas</option></select><select id="finNature"><option value="">Avulsas e recorrentes</option><option value="single">Avulsas</option><option value="recurring">Recorrentes</option></select><input id="finMonth" type="month"></div>
+      <div class="two-grid"><article class="card"><div class="card-head"><div><h3>Entradas x saídas</h3><p>Histórico mensal.</p></div></div><canvas id="financeLineChart"></canvas><div id="financeLineEmpty" class="chart-empty hidden">Sem dados suficientes.</div></article><article class="card"><div class="card-head"><div><h3>Despesas por categoria</h3><p>Distribuição do período.</p></div></div><canvas id="financePieChart"></canvas><div id="financePieEmpty" class="chart-empty hidden">Sem despesas.</div></article></div>
+      <article class="card"><div class="card-head"><div><h3>Movimentações</h3><p id="financeCount">0 registros</p></div></div><div class="table-wrap"><table><thead><tr><th>Data</th><th>Descrição</th><th>Categoria</th><th>Conta</th><th>Origem</th><th>Tipo</th><th>Valor</th><th></th></tr></thead><tbody id="financeRows"></tbody></table></div></article>
+    </section>
+
+    <section id="calendar" class="page">
+      <div class="page-head"><div><span class="section-kicker">TRAIL CALENDAR</span><h1>Agenda</h1><p>Prazos, viagens, vacinas, parcelas e compromissos no mesmo lugar.</p></div><button class="btn primary" onclick="Frontier.openCalendarModal()">+ Compromisso</button></div>
+      <div class="calendar-layout"><article class="card"><div class="calendar-nav"><button class="icon-btn" id="calendarPrev">←</button><h3 id="calendarMonthTitle"></h3><button class="icon-btn" id="calendarNext">→</button></div><div class="calendar-week" id="calendarWeekHeader"><span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span></div><div id="calendarGrid" class="calendar-grid"></div><small class="calendar-hint">Clique em um dia para ver os compromissos ou adicionar um novo.</small></article><article class="card"><div class="card-head"><div><h3 id="calendarSelectedTitle">Dia selecionado</h3><p id="calendarSelectedSubtitle">Clique em uma data no calendário.</p></div><button class="btn secondary compact" onclick="Frontier.openSelectedCalendarModal()">+ Neste dia</button></div><div id="calendarSelectedEvents" class="stack-list calendar-selected-events"></div><div class="calendar-divider"></div><div class="card-head"><div><h3>Próximos eventos</h3><p>Ordenados por data.</p></div></div><div id="calendarUpcoming" class="stack-list"></div></article></div>
+    </section>
+
+    <section id="notes" class="page">
+      <div class="page-head"><div><span class="section-kicker">FIELD NOTES</span><h1>Notas</h1><p>Pastas, tags, cores, listas, símbolos e anotações ricas.</p></div><button class="btn primary" onclick="Frontier.newNote()">+ Nova nota</button></div>
+      <div class="notes-layout"><aside class="note-sidebar"><input id="noteSearch" placeholder="Buscar notas..."><div class="note-filter-row"><select id="noteFolderFilter"><option value="">Todas as pastas</option></select><button class="icon-btn" onclick="Frontier.openFolderModal()" title="Nova pasta">＋</button></div><div id="notesList" class="notes-list"></div></aside><div id="noteEmpty" class="note-empty"><div>📝</div><h3>Selecione ou crie uma nota.</h3><p>Use como um Notes pessoal para ideias, listas, projetos e informações rápidas.</p></div><article id="noteEditor" class="note-editor hidden"><div class="note-editor-head"><input id="noteTitle" placeholder="Título da nota"><select id="noteFolder"></select><input id="noteTags" placeholder="tags separadas por vírgula"><input id="noteColor" type="color" value="#c7895b"><button id="notePinBtn" class="icon-btn" title="Fixar">📌</button><button id="noteDeleteBtn" class="icon-btn danger-icon" title="Excluir">🗑</button></div><div class="rich-toolbar"><button data-cmd="bold"><b>B</b></button><button data-cmd="italic"><i>I</i></button><button data-cmd="underline"><u>U</u></button><button data-cmd="insertUnorderedList">• Lista</button><button data-cmd="insertOrderedList">1. Lista</button><span></span><button data-symbol="✅">✅</button><button data-symbol="⭐">⭐</button><button data-symbol="📌">📌</button><button data-symbol="💡">💡</button><button data-symbol="⚠️">⚠️</button><button data-symbol="➡️">➡️</button><button data-symbol="💰">💰</button><button data-symbol="🐾">🐾</button></div><div id="noteContent" class="note-content" contenteditable="true" data-placeholder="Comece a escrever..."></div><footer><span id="noteSaveStatus">Salvo automaticamente</span><span id="noteUpdated"></span></footer></article></div>
+    </section>
+
+    <section id="pets" class="page">
+      <div class="page-head"><div><span class="section-kicker">RANCH</span><h1>Animais</h1><p>Saúde, vacinas, peso, consultas, medicamentos e gastos.</p></div><button class="btn primary" onclick="Frontier.openPetModal()">+ Cadastrar animal</button></div>
+      <div class="stats-grid"><div class="stat-card"><span>Animais cadastrados</span><b id="petStatCount">0</b><small>no seu rancho</small></div><div class="stat-card"><span>Vacinas próximas</span><b id="petStatVaccines">0</b><small>em até 30 dias</small></div><div class="stat-card"><span>Gastos no mês</span><b id="petStatExpenses">R$ 0</b><small>todos os animais</small></div><div class="stat-card"><span>Consultas próximas</span><b id="petStatVisits">0</b><small>agendadas</small></div></div>
+      <div id="petsGrid" class="pet-grid"></div>
+    </section>
+
+    <section id="settings" class="page">
+      <div class="page-head"><div><span class="section-kicker">BASE SETTINGS</span><h1>Configurações</h1><p>Preferências pessoais e instalação do Frontier como aplicativo.</p></div></div>
+      <div class="settings-grid">
+        <article class="card">
+          <div class="card-head"><div><h3>Preferências</h3><p>Essas preferências acompanham sua conta.</p></div></div>
+          <form id="settingsForm" class="form-grid">
+            <label class="full">Nome de exibição<input id="settingsName" maxlength="60" required></label>
+            <label>Primeiro dia da semana<select id="settingsWeekStart"><option value="sunday">Domingo</option><option value="monday">Segunda-feira</option></select></label>
+            <label>Tema<select id="settingsTheme"><option value="dark">Noite do Texas</option><option value="light">Deserto claro</option><option value="kuromi">Kuromi</option><option value="barbie">Barbie</option></select></label>
+            <label>Página inicial<select id="settingsDefaultPage"><option value="dashboard">Visão Geral</option><option value="projects">Projetos</option><option value="finance">Finanças</option><option value="calendar">Agenda</option><option value="books">Livros</option></select></label>
+            <label>Moeda<input value="Real brasileiro (R$)" disabled></label>
+            <div class="full modal-actions"><button class="btn primary" type="submit">Salvar preferências</button></div>
+          </form>
+        </article>
+        <article class="card">
+          <div class="card-head"><div><h3>Frontier no celular e computador</h3><p>Instale como aplicativo sem depender da loja.</p></div></div>
+          <div class="install-panel"><div class="install-icon">★</div><div><b id="pwaStatusTitle">Frontier Web App</b><p id="pwaStatusText" class="muted">Verificando disponibilidade de instalação...</p></div></div>
+          <button id="installPwaBtn" class="btn secondary wide" type="button">Instalar Frontier</button>
+          <small class="muted install-help">No iPhone/iPad: abra pelo Safari, toque em Compartilhar e escolha “Adicionar à Tela de Início”.</small>
+        </article>
+        <article class="card">
+          <div class="card-head"><div><h3>Notificações</h3><p>Central interna sempre disponível; push no celular é opcional.</p></div></div>
+          <div class="stack-list"><div class="stack-item"><div><b id="pushStatusTitle">Notificações no celular</b><small id="pushStatusText">Verificando disponibilidade...</small></div><span>🔔</span></div></div>
+          <button id="enablePushBtn" class="btn secondary wide" type="button">Ativar notificações no celular</button>
+          <small class="muted install-help">Para receber avisos com o Frontier fechado, configure Web Push no Supabase seguindo o guia incluído. Sem isso, a Central de Notificações continua funcionando normalmente.</small>
+        </article>
+        <article class="card">
+          <div class="card-head"><div><h3>Sistema</h3><p>Informações da sua instalação.</p></div></div>
+          <div class="stack-list">
+            <div class="stack-item"><div><b>Versão</b><small>Frontier 1.3 — Season Finale</small></div><span>✓</span></div>
+            <div class="stack-item"><div><b>Dados</b><small id="settingsBackendLabel">Supabase</small></div><span>☁️</span></div>
+            <div class="stack-item"><div><b>Formato monetário</b><small>Português (Brasil)</small></div><span>R$</span></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="alerts" class="page">
+      <div class="page-head"><div><span class="section-kicker">WATCHTOWER</span><h1>Central de notificações</h1><p>Prazos, contas, agenda, cuidados e revisões em um único lugar.</p></div><button id="markAllNotificationsBtn" class="btn secondary" type="button">Marcar tudo como lido</button></div>
+      <div class="notification-toolbar"><span id="notificationSummary">0 não lidas</span><select id="notificationFilter"><option value="all">Todas</option><option value="unread">Não lidas</option><option value="read">Lidas</option></select></div>
+      <div id="alertsList" class="alert-list"></div>
+    </section>
+  </main>
+  <nav class="mobile-nav" aria-label="Navegação mobile">
+    <button data-mobile-page="dashboard" class="active"><span>🏠</span><small>Início</small></button>
+    <button data-mobile-page="projects"><span>🧭</span><small>Projetos</small></button>
+    <button data-mobile-page="finance"><span>💵</span><small>Finanças</small></button>
+    <button data-mobile-page="calendar"><span>📅</span><small>Agenda</small></button>
+    <button data-mobile-page="books"><span>📚</span><small>Livros</small></button>
+    <button data-mobile-page="studies"><span>🎓</span><small>Estudos</small></button>
+    <button data-mobile-page="vehicles"><span>🚘</span><small>Veículos</small></button>
+    <button data-mobile-page="notes"><span>📝</span><small>Notas</small></button>
+    <button data-mobile-page="pets"><span>🐾</span><small>Animais</small></button>
+    <button data-mobile-page="settings"><span>⚙️</span><small>Ajustes</small></button>
+  </nav>
+</div>
+
+<div id="quickAddMenu" class="quick-menu hidden">
+  <button onclick="Frontier.openProjectWizard();Frontier.closeQuickMenu()">🧭 Novo projeto</button>
+  <button onclick="Frontier.openFinanceModal();Frontier.closeQuickMenu()">💵 Movimentação</button>
+  <button onclick="Frontier.newNote();Frontier.closeQuickMenu()">📝 Nota</button>
+  <button onclick="Frontier.openPetModal();Frontier.closeQuickMenu()">🐾 Animal</button>
+  <button onclick="Frontier.openCalendarModal();Frontier.closeQuickMenu()">📅 Compromisso</button>
+  <button onclick="Frontier.openStudyModal();Frontier.closeQuickMenu()">📚 Estudo</button>
+  <button onclick="Frontier.openVehicleModal();Frontier.closeQuickMenu()">🚘 Veículo</button>
+  <button onclick="Frontier.openBookModal();Frontier.closeQuickMenu()">📚 Livro</button>
+  <button onclick="Frontier.openHabitModal();Frontier.closeQuickMenu()">✅ Hábito</button>
+</div>
+
+<div id="projectModal" class="modal hidden"><div class="modal-card xl"><div class="modal-head"><div><span class="section-kicker">NEW TRAIL</span><h2>Novo projeto</h2><p>O formulário muda de acordo com o objetivo.</p></div><button class="close-btn" data-close="projectModal">✕</button></div><div class="wizard-steps"><span class="active" data-wstep-label="1">1 Tipo</span><span data-wstep-label="2">2 Objetivo</span><span data-wstep-label="3">3 Acompanhamento</span><span data-wstep-label="4">4 Plano</span></div><div id="projectWizardBody"></div><div class="modal-actions split"><button id="projectBackBtn" class="btn ghost">Voltar</button><div><button class="btn ghost" data-close="projectModal">Cancelar</button> <button id="projectNextBtn" class="btn primary">Continuar</button></div></div></div></div>
+<div id="projectDetailModal" class="modal hidden"><div class="modal-card xxl"><div class="modal-head"><div><span class="section-kicker">PROJECT CAMP</span><h2 id="projectDetailTitle"></h2><p id="projectDetailSub"></p></div><button class="close-btn" data-close="projectDetailModal">✕</button></div><div id="projectDetailBody"></div></div></div>
+
+<div id="projectEditModal" class="modal hidden"><div class="modal-card xl"><div class="modal-head"><div><span class="section-kicker">EDIT TRAIL</span><h2>Editar projeto</h2><p>Altere os dados sem perder histórico, tarefas ou movimentações.</p></div><button class="close-btn" data-close="projectEditModal">✕</button></div><form id="projectEditForm"><div id="projectEditBody"></div><div class="modal-actions"><button type="button" class="btn ghost" data-close="projectEditModal">Cancelar</button><button class="btn primary" type="submit">Salvar alterações</button></div></form></div></div>
+
+<div id="financeModal" class="modal hidden"><div class="modal-card"><div class="modal-head"><div><span class="section-kicker">LEDGER ENTRY</span><h2 id="financeModalTitle">Nova movimentação</h2></div><button class="close-btn" data-close="financeModal">✕</button></div><form id="financeForm" class="form-grid"><label>Tipo<select id="fType"><option value="expense">Saída</option><option value="income">Entrada</option><option value="reserve">Reserva</option></select></label><label>Valor<input id="fAmount" type="text" inputmode="decimal" data-currency required placeholder="R$ 0,00"></label><label class="full">Descrição<input id="fDescription" required></label><label>Categoria<select id="fCategory"></select></label><label>Data<input id="fDate" type="date" required></label><label>Conta<select id="fAccount"></select></label><label>Origem<select id="fSourceType"><option value="manual">Geral</option><option value="project">Projeto</option><option value="pet">Animal</option><option value="vehicle">Veículo</option><option value="book">Livro</option></select></label><label>Vincular a<select id="fSourceId"><option value="">Nenhum</option></select></label><label>Natureza<select id="fNature"><option value="single">Avulsa</option><option value="recurring">Recorrente</option></select></label><label id="fInstallmentsLabel">Parcelas<input id="fInstallments" type="number" min="1" max="60" value="1"></label><div id="fRecurringGroup" class="full recurrence-box hidden"><div class="form-grid"><label>Frequência<select id="fRecurring"><option value="monthly">Mensal</option><option value="weekly">Semanal</option><option value="yearly">Anual</option></select></label><label>Quantidade de lançamentos<input id="fRepeatCount" type="number" min="2" max="60" value="12"></label></div><small class="muted">O Frontier cria os próximos lançamentos automaticamente para você acompanhar os vencimentos.</small></div><label class="full">Observação<textarea id="fNote"></textarea></label><div class="full modal-actions"><button type="button" class="btn ghost" data-close="financeModal">Cancelar</button><button class="btn primary" id="financeSubmitBtn" type="submit">Salvar</button></div></form></div></div>
+
+<div id="accountModal" class="modal hidden"><div class="modal-card"><div class="modal-head"><div><span class="section-kicker">WALLET</span><h2>Nova conta</h2></div><button class="close-btn" data-close="accountModal">✕</button></div><form id="accountForm" class="form-grid"><label>Nome<input id="aName" required placeholder="Ex.: Conta principal"></label><label>Tipo<select id="aType"><option>Conta bancária</option><option>Dinheiro</option><option>Carteira digital</option><option>Cartão</option><option>Investimento</option></select></label><label>Saldo inicial<input id="aInitial" type="text" inputmode="decimal" data-currency value="R$ 0,00"></label><label>Cor<input id="aColor" type="color" value="#a65f3d"></label><div class="full modal-actions"><button type="button" class="btn ghost" data-close="accountModal">Cancelar</button><button class="btn primary">Criar conta</button></div></form></div></div>
+
+<div id="calendarModal" class="modal hidden"><div class="modal-card"><div class="modal-head"><div><span class="section-kicker">NEW DATE</span><h2 id="calendarModalTitle">Novo compromisso</h2></div><button class="close-btn" data-close="calendarModal">✕</button></div><form id="calendarForm" class="form-grid"><label class="full">Título<input id="calTitle" required></label><label>Data<input id="calDate" type="date" required></label><label>Tipo<select id="calType"><option>Compromisso</option><option>Lembrete</option><option>Saúde</option><option>Viagem</option><option>Financeiro</option><option>Outro</option></select></label><label class="full">Observação<textarea id="calNote"></textarea></label><div class="full modal-actions"><button type="button" class="btn ghost" data-close="calendarModal">Cancelar</button><button class="btn primary" id="calendarSubmitBtn">Salvar</button></div></form></div></div>
+
+<div id="folderModal" class="modal hidden"><div class="modal-card small"><div class="modal-head"><div><h2>Nova pasta de notas</h2></div><button class="close-btn" data-close="folderModal">✕</button></div><form id="folderForm"><label class="field">Nome<input id="folderName" required></label><div class="modal-actions"><button type="button" class="btn ghost" data-close="folderModal">Cancelar</button><button class="btn primary">Criar</button></div></form></div></div>
+
+
+<div id="studyModal" class="modal hidden"><div class="modal-card"><div class="modal-head"><div><span class="section-kicker">STUDY LOG</span><h2>Registrar estudo</h2></div><button class="close-btn" data-close="studyModal">✕</button></div><form id="studyForm" class="form-grid"><label>Projeto<select id="studyProject"></select></label><label>Data<input id="studyDate" type="date" required></label><label>Matéria / assunto<input id="studySubject" required placeholder="Ex.: Matemática"></label><label>Tempo em minutos<input id="studyMinutes" type="number" min="1" required></label><label>Nota / acerto % (opcional)<input id="studyScore" type="number" min="0" max="100" step="0.1"></label><label class="full">Observação<textarea id="studyNote"></textarea></label><div class="full modal-actions"><button type="button" class="btn ghost" data-close="studyModal">Cancelar</button><button class="btn primary">Salvar sessão</button></div></form></div></div>
+
+<div id="vehicleModal" class="modal hidden"><div class="modal-card"><div class="modal-head"><div><span class="section-kicker">NEW RIDE</span><h2 id="vehicleModalTitle">Cadastrar veículo</h2></div><button class="close-btn" data-close="vehicleModal">✕</button></div><form id="vehicleForm" class="form-grid"><label>Nome / apelido<input id="vehicleName" required placeholder="Ex.: Meu carro"></label><label>Tipo<select id="vehicleType"><option>Carro</option><option>Moto</option><option>Outro</option></select></label><label>Marca<input id="vehicleBrand"></label><label>Modelo<input id="vehicleModel"></label><label>Ano<input id="vehicleYear" type="number" min="1950" max="2100"></label><label>Placa<input id="vehiclePlate"></label><label>Quilometragem atual<input id="vehicleOdometer" type="number" min="0"></label><label>Data de compra<input id="vehiclePurchaseDate" type="date"></label><label class="full">Observações<textarea id="vehicleNotes"></textarea></label><div class="full modal-actions"><button type="button" class="btn ghost" data-close="vehicleModal">Cancelar</button><button class="btn primary" id="vehicleSubmitBtn">Cadastrar</button></div></form></div></div>
+<div id="vehicleDetailModal" class="modal hidden"><div class="modal-card xxl"><div class="modal-head"><div><span class="section-kicker">GARAGE FILE</span><h2 id="vehicleDetailTitle"></h2><p id="vehicleDetailSub"></p></div><button class="close-btn" data-close="vehicleDetailModal">✕</button></div><div id="vehicleDetailBody"></div></div></div>
+
+
+<div id="petModal" class="modal hidden"><div class="modal-card"><div class="modal-head"><div><span class="section-kicker">NEW RANCH MEMBER</span><h2>Cadastrar animal</h2></div><button class="close-btn" data-close="petModal">✕</button></div><form id="petForm" class="form-grid"><label>Nome<input id="petName" required></label><label>Espécie<select id="petSpecies"><option>Cachorro</option><option>Gato</option><option>Ave</option><option>Coelho</option><option>Outro</option></select></label><label>Raça<input id="petBreed"></label><label>Sexo<select id="petSex"><option>Não informado</option><option>Macho</option><option>Fêmea</option></select></label><label>Nascimento<input id="petBirth" type="date"></label><label>Peso atual (kg)<input id="petWeight" type="number" step="0.01"></label><label class="full">Veterinário / clínica<input id="petVet"></label><label class="full">Observações<textarea id="petNotes"></textarea></label><div class="full modal-actions"><button type="button" class="btn ghost" data-close="petModal">Cancelar</button><button class="btn primary">Cadastrar</button></div></form></div></div>
+<div id="petDetailModal" class="modal hidden"><div class="modal-card xxl"><div class="modal-head"><div><span class="section-kicker">RANCH FILE</span><h2 id="petDetailTitle"></h2><p id="petDetailSub"></p></div><button class="close-btn" data-close="petDetailModal">✕</button></div><div id="petDetailBody"></div></div></div>
+
+
+<div id="bookModal" class="modal hidden"><div class="modal-card"><div class="modal-head"><div><span class="section-kicker">NEW BOOK</span><h2 id="bookModalTitle">Adicionar livro</h2><p>Cadastre uma leitura e acompanhe seu progresso.</p></div><button class="close-btn" data-close="bookModal">✕</button></div><form id="bookForm" class="form-grid"><label class="full">Título<input id="bookTitle" required></label><label>Autor<input id="bookAuthor"></label><label>Categoria<input id="bookCategory" placeholder="Ex.: Filosofia"></label><label>Status<select id="bookStatus"><option>Quero ler</option><option>Lendo</option><option>Pausado</option><option>Concluído</option><option>Abandonado</option></select></label><label>Total de páginas<input id="bookTotalPages" type="number" min="0"></label><label>Página atual<input id="bookCurrentPage" type="number" min="0"></label><label>Data de início<input id="bookStartDate" type="date"></label><label>Data de término<input id="bookEndDate" type="date"></label><label>Preço pago<input id="bookPrice" type="text" inputmode="decimal" data-currency placeholder="R$ 0,00"></label><label>Projeto relacionado<select id="bookProject"><option value="">Nenhum</option></select></label><label class="full">URL da capa (opcional)<input id="bookCoverUrl" type="url" placeholder="https://..."></label><label class="full">Observações<textarea id="bookNotes"></textarea></label><div class="full modal-actions"><button type="button" class="btn ghost" data-close="bookModal">Cancelar</button><button class="btn primary" id="bookSubmitBtn">Salvar livro</button></div></form></div></div>
+<div id="bookDetailModal" class="modal hidden"><div class="modal-card xxl"><div class="modal-head"><div><span class="section-kicker">READING FILE</span><h2 id="bookDetailTitle"></h2><p id="bookDetailSub"></p></div><button class="close-btn" data-close="bookDetailModal">✕</button></div><div id="bookDetailBody"></div></div></div>
+
+
+<div id="habitModal" class="modal hidden"><div class="modal-card"><div class="modal-head"><div><span class="section-kicker">NEW RHYTHM</span><h2 id="habitModalTitle">Novo hábito</h2><p>Escolha os dias em que ele faz parte da sua rotina.</p></div><button class="close-btn" data-close="habitModal">✕</button></div><form id="habitForm" class="form-grid"><label>Ícone<input id="habitIcon" maxlength="4" value="✅" placeholder="✅"></label><label>Nome<input id="habitName" required maxlength="60" placeholder="Ex.: Ler 20 minutos"></label><div class="full"><span class="field-label">Dias da semana</span><div class="weekday-picker" id="habitDays"><label><input type="checkbox" value="0" checked>Dom</label><label><input type="checkbox" value="1" checked>Seg</label><label><input type="checkbox" value="2" checked>Ter</label><label><input type="checkbox" value="3" checked>Qua</label><label><input type="checkbox" value="4" checked>Qui</label><label><input type="checkbox" value="5" checked>Sex</label><label><input type="checkbox" value="6" checked>Sáb</label></div></div><label class="full">Observação<input id="habitNote" maxlength="120" placeholder="Opcional"></label><div class="full modal-actions"><button type="button" class="btn ghost" data-close="habitModal">Cancelar</button><button class="btn primary" type="submit">Salvar hábito</button></div></form></div></div>
+<div id="monthlyReviewModal" class="modal hidden"><div class="modal-card xl"><div class="modal-head"><div><span class="section-kicker">MONTHLY REVIEW</span><h2>Revisão mensal</h2><p>Uma fotografia do seu mês no Frontier.</p></div><button class="close-btn" data-close="monthlyReviewModal">✕</button></div><div class="review-month-control"><label>Mês<input id="reviewMonthInput" type="month"></label></div><div id="monthlyReviewBody"></div></div></div>
+<div id="toastStack" class="toast-stack" aria-live="polite" aria-atomic="true"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js"></script>
+<script src="js/backend.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/app.js?v=1.3-season-finale"></script>
+</body>
+</html>

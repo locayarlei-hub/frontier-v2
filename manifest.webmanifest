@@ -1,0 +1,26 @@
+{
+  "name": "Frontier — Construa seu caminho",
+  "short_name": "Frontier",
+  "description": "Sistema pessoal para projetos, finanças, estudos, veículos, livros, agenda, notas e animais.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#1a120e",
+  "theme_color": "#2b1b14",
+  "lang": "pt-BR",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
