@@ -1,11 +1,11 @@
-const CACHE = "frontier-static-v1.3.1-laptop-fix";
+const CACHE = "frontier-static-v1.3.2-laptop-definitive";
 const SHELL = [
   "./",
   "./index.html",
-  "./css/styles.css?v=1.3.1-laptop-fix",
+  "./css/styles-1.3.2.css?v=1.3.2",
   "./js/backend.js",
   "./js/charts.js",
-  "./js/app.js?v=1.3.1-laptop-fix",
+  "./js/app.js?v=1.3.2",
   "./manifest.webmanifest",
   "./icons/icon-192.png",
   "./icons/icon-512.png"
