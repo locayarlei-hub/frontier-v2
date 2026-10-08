@@ -47,14 +47,122 @@ function toast(message,type="success"){
   const item=document.createElement("div");item.className=`toast ${type}`;item.innerHTML=`<span>${type==="error"?"!":"✓"}</span><div>${esc(message)}</div>`;stack.appendChild(item);
   requestAnimationFrame(()=>item.classList.add("show"));setTimeout(()=>{item.classList.remove("show");setTimeout(()=>item.remove(),250)},3000)
 }
-function currentPreferences(){const m=user?.user_metadata||{};return {display_name:m.display_name||user?.email?.split("@")[0]||"Usuário",week_start:m.week_start||"sunday",theme:m.theme||"dark",default_page:m.default_page||"dashboard"}}
+function currentPreferences(){const m=user?.user_metadata||{};return {display_name:m.display_name||user?.email?.split("@")[0]||"Usuário",week_start:m.week_start||"sunday",theme:m.theme||localStorage.getItem("frontier_theme")||"dark",default_page:m.default_page||"dashboard"}}
+const THEME_COPY_DEFAULT={
+  ".brand small":"Build your own path",
+  "#dashboard .page-head .section-kicker":"BASE CAMP",
+  "#dashboard .page-head p":"Projetos, dinheiro, estudos, livros, agenda, notas e animais — tudo no mesmo mapa.",
+  "#dashboard .today-card .section-kicker":"TODAY",
+  "#habits .page-head .section-kicker":"RHYTHM",
+  "#projects .page-head .section-kicker":"TRAILS",
+  "#studies .page-head .section-kicker":"STUDY CAMP",
+  "#vehicles .page-head .section-kicker":"GARAGE",
+  "#books .page-head .section-kicker":"LIBRARY",
+  "#finance .page-head .section-kicker":"LEDGER",
+  "#calendar .page-head .section-kicker":"TRAIL CALENDAR",
+  "#notes .page-head .section-kicker":"FIELD NOTES",
+  "#pets .page-head .section-kicker":"RANCH",
+  "#pets .stats-grid .stat-card:first-child small":"no seu rancho",
+  "#settings .page-head .section-kicker":"BASE SETTINGS",
+  "#alerts .page-head .section-kicker":"WATCHTOWER",
+  "#projectModal .section-kicker":"NEW TRAIL",
+  "#projectDetailModal .section-kicker":"PROJECT CAMP",
+  "#projectEditModal .section-kicker":"EDIT TRAIL",
+  "#financeModal .section-kicker":"LEDGER ENTRY",
+  "#accountModal .section-kicker":"WALLET",
+  "#calendarModal .section-kicker":"NEW DATE",
+  "#studyModal .section-kicker":"STUDY LOG",
+  "#vehicleModal .section-kicker":"NEW RIDE",
+  "#vehicleDetailModal .section-kicker":"GARAGE FILE",
+  "#petModal .section-kicker":"NEW RANCH MEMBER",
+  "#petDetailModal .section-kicker":"RANCH FILE",
+  "#bookModal .section-kicker":"NEW BOOK",
+  "#bookDetailModal .section-kicker":"READING FILE",
+  "#habitModal .section-kicker":"NEW RHYTHM",
+  "#monthlyReviewModal .section-kicker":"MONTHLY REVIEW"
+};
+const THEME_COPY_KUROMI={
+  ".brand small":"Cute chaos. Your path.",
+  "#dashboard .page-head .section-kicker":"KUROMI WORLD",
+  "#dashboard .page-head p":"Projetos, dinheiro, estudos, livros, agenda, notas e animais — seu lado dark & cute dentro do Frontier.",
+  "#dashboard .today-card .section-kicker":"TODAY'S MISCHIEF",
+  "#habits .page-head .section-kicker":"MISCHIEF ROUTINE",
+  "#projects .page-head .section-kicker":"DARK PLANS",
+  "#studies .page-head .section-kicker":"STUDY DEN",
+  "#vehicles .page-head .section-kicker":"MIDNIGHT GARAGE",
+  "#books .page-head .section-kicker":"MIDNIGHT LIBRARY",
+  "#finance .page-head .section-kicker":"DARK WALLET",
+  "#calendar .page-head .section-kicker":"MISCHIEF CALENDAR",
+  "#notes .page-head .section-kicker":"SECRET NOTES",
+  "#pets .page-head .section-kicker":"PET HIDEOUT",
+  "#pets .stats-grid .stat-card:first-child small":"no seu pet hideout",
+  "#settings .page-head .section-kicker":"STYLE LAB",
+  "#alerts .page-head .section-kicker":"MISCHIEF CENTER",
+  "#projectModal .section-kicker":"NEW DARK PLAN",
+  "#projectDetailModal .section-kicker":"DARK PROJECT",
+  "#projectEditModal .section-kicker":"EDIT DARK PLAN",
+  "#financeModal .section-kicker":"DARK WALLET ENTRY",
+  "#accountModal .section-kicker":"DARK WALLET",
+  "#calendarModal .section-kicker":"NEW MISCHIEF DATE",
+  "#studyModal .section-kicker":"STUDY DIARY",
+  "#vehicleModal .section-kicker":"NEW MIDNIGHT RIDE",
+  "#vehicleDetailModal .section-kicker":"MIDNIGHT GARAGE",
+  "#petModal .section-kicker":"NEW PET",
+  "#petDetailModal .section-kicker":"PET PROFILE",
+  "#bookModal .section-kicker":"MIDNIGHT BOOK",
+  "#bookDetailModal .section-kicker":"READING DIARY",
+  "#habitModal .section-kicker":"NEW MISCHIEF ROUTINE",
+  "#monthlyReviewModal .section-kicker":"MONTHLY MOOD"
+};
+const THEME_COPY_BARBIE={
+  ".brand small":"Dream it. Live it.",
+  "#dashboard .page-head .section-kicker":"DREAMHOUSE",
+  "#dashboard .page-head p":"Projetos, dinheiro, estudos, livros, agenda, notas e animais — seu mundo Frontier em um só lugar.",
+  "#dashboard .today-card .section-kicker":"TODAY IN PINK",
+  "#habits .page-head .section-kicker":"GLOW ROUTINE",
+  "#projects .page-head .section-kicker":"DREAM PLANS",
+  "#studies .page-head .section-kicker":"STUDY STUDIO",
+  "#vehicles .page-head .section-kicker":"DREAM GARAGE",
+  "#books .page-head .section-kicker":"BOOK CLUB",
+  "#finance .page-head .section-kicker":"GLAM BUDGET",
+  "#calendar .page-head .section-kicker":"DREAM CALENDAR",
+  "#notes .page-head .section-kicker":"PINK NOTES",
+  "#pets .page-head .section-kicker":"PET CLUB",
+  "#pets .stats-grid .stat-card:first-child small":"no seu pet club",
+  "#settings .page-head .section-kicker":"STYLE STUDIO",
+  "#alerts .page-head .section-kicker":"SPARKLE CENTER",
+  "#projectModal .section-kicker":"NEW DREAM PLAN",
+  "#projectDetailModal .section-kicker":"DREAM PROJECT",
+  "#projectEditModal .section-kicker":"EDIT DREAM PLAN",
+  "#financeModal .section-kicker":"BUDGET ENTRY",
+  "#accountModal .section-kicker":"PINK WALLET",
+  "#calendarModal .section-kicker":"NEW DATE",
+  "#studyModal .section-kicker":"STUDY DIARY",
+  "#vehicleModal .section-kicker":"DREAM RIDE",
+  "#vehicleDetailModal .section-kicker":"DREAM GARAGE",
+  "#petModal .section-kicker":"NEW PET",
+  "#petDetailModal .section-kicker":"PET PROFILE",
+  "#bookModal .section-kicker":"BOOK CLUB",
+  "#bookDetailModal .section-kicker":"READING DIARY",
+  "#habitModal .section-kicker":"NEW ROUTINE",
+  "#monthlyReviewModal .section-kicker":"MONTHLY GLOW"
+};
+function applyThemeCopy(theme="dark"){
+  let copy=THEME_COPY_DEFAULT;
+  if(theme==="barbie")copy={...THEME_COPY_DEFAULT,...THEME_COPY_BARBIE};
+  if(theme==="kuromi")copy={...THEME_COPY_DEFAULT,...THEME_COPY_KUROMI};
+  Object.entries(copy).forEach(([selector,value])=>{const el=document.querySelector(selector);if(el)el.textContent=value});
+}
 function applyTheme(theme="dark"){
   document.body.classList.remove("theme-light","theme-kuromi","theme-barbie");
   if(theme==="light")document.body.classList.add("theme-light");
   if(theme==="kuromi")document.body.classList.add("theme-kuromi");
   if(theme==="barbie")document.body.classList.add("theme-barbie");
+  localStorage.setItem("frontier_theme",theme);
+  applyThemeCopy(theme);
   const meta=document.querySelector('meta[name="theme-color"]');
   if(meta){meta.setAttribute("content",theme==="light"?"#f3e7d5":theme==="kuromi"?"#211225":theme==="barbie"?"#f45bb4":"#2b1b14")}
+  if(user){requestAnimationFrame(()=>{renderDashboard();if($("#finance")?.classList.contains("active"))renderFinance()})}
 }
 function applyPreferences(){appPrefs=currentPreferences();applyTheme(appPrefs.theme);const name=appPrefs.display_name||"Usuário";if($("#sideUserName"))$("#sideUserName").textContent=name;if($("#sideUserEmail"))$("#sideUserEmail").textContent=user?.email||"";if($("#userAvatar"))$("#userAvatar").textContent=name.charAt(0).toUpperCase()}
 function isStandalone(){return window.matchMedia?.("(display-mode: standalone)").matches||window.navigator.standalone===true}
@@ -67,6 +175,7 @@ async function removePersist(kind,id){await Backend.deleteEntity(user,tableMap[k
 async function persistLocalOnly(){await Backend.saveState(user,state)}
 
 async function boot(){
+  applyTheme(localStorage.getItem("frontier_theme")||"dark");
   if("serviceWorker" in navigator && (location.protocol==="https:"||location.hostname==="localhost"||location.hostname==="127.0.0.1")){navigator.serviceWorker.register("./service-worker.js").catch(err=>console.warn("Service Worker:",err))}
   window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstallPrompt=e;updatePwaUi()});
   window.addEventListener("appinstalled",()=>{deferredInstallPrompt=null;updatePwaUi()});
