@@ -1,4 +1,4 @@
-const CACHE = "frontier-v1.3.4";
+const CACHE = "frontier-v1.3.5";
 const SHELL = [
   "./",
   "./index.html",
@@ -6,6 +6,7 @@ const SHELL = [
   "./js/backend.js",
   "./js/charts.js?v=1.3.4",
   "./js/app.js?v=1.3.4",
+  "./js/theme-worlds-1.3.5.js?v=1.3.5",
   "./manifest.webmanifest",
   "./icons/icon-192.png",
   "./icons/icon-512.png"
